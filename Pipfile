@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 falcon = "*"
 gunicorn = "*"
+pytest = "*"
+pylint = "*"
 
 [packages]
 redis = "*"
