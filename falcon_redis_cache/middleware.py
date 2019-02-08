@@ -31,12 +31,13 @@ class RedisCacheMiddleware(object):
 
     def process_resource(self, req, resp, resource, params):
         """Provide redis cache with every request."""
-        req.context.setdefault('params', params)
-        resp.cached = self.client.get(cache_key(req, resource))
+        if hasattr(resource, 'use_cache') and resource.use_cache:
+            req.context.setdefault('params', params)
+            resp.cached = self.client.get(cache_key(req, resource))
 
     def process_response(self, req, resp, resource, req_succeeded):
         """Sets or deletes cache for provided resources."""
-        if req_succeeded and resource.use_cache:
+        if req_succeeded and hasattr(resource, 'use_cache') and resource.use_cache:
             cache = cache_key(req, resource)
             if req.method == HttpMethods.GET:
                 self.client.set(cache, resp.body)
