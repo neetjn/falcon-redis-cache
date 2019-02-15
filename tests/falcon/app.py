@@ -7,5 +7,5 @@ from tests.falcon.resource import TestResource, TestUniqueResource, TestCollecti
 api = falcon.API(middleware=[RedisCacheMiddleware(redis_host=REDIS_HOST, redis_port=REDIS_PORT)])
 
 api.add_route(TestResource.route, TestResource())
-api.add_route(TestUniqueResource.route, TestResource())
-api.add_route(TestCollectionResource.route, TestResource())
+api.add_route(TestUniqueResource.route, TestUniqueResource())
+api.add_route(TestCollectionResource.route, TestCollectionResource())

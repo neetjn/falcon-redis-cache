@@ -52,7 +52,7 @@ class RedisCacheMiddleware(object):
                     # assumes that binded resources ay have routes with similar params
                     route = Template(tmpl).safe_substitute(**params)
                     # remove last character, uri has final slash stripped
-                    uri = f'{req.scheme}://{req.netloc}{route}'
+                    uri = '{}://{}{}'.format(req.scheme, req.netloc, route)
                     # delete binded cached resources
                     _cache = cache_key(req, resc, uri)
                     self.client.delete(_cache)
