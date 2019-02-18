@@ -18,6 +18,8 @@ MAX_ACCEPT_TIME = MAX_SLEEP_TIME + 0.05
 
 class FalconCacheTest(testing.TestCase):
 
+    # TODO: TEST VERB CACHE INVALIDATION
+
     def setUp(self):
         super(FalconCacheTest, self).setUp()
         self.app = api
