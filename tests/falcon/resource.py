@@ -1,9 +1,12 @@
 import json
+import redis
 import time
 import os
 from falcon.errors import HTTPBadRequest, HTTPNotFound
 from falcon_redis_cache.hooks import CacheProvider
 from falcon_redis_cache.resource import CacheCompaitableResource
+
+from tests.falcon.constants import REDIS_HOST, REDIS_PORT
 
 
 MAX_SLEEP_TIME = int(os.environ.setdefault('MAX_SLEEP_TIME', '3'))
@@ -34,6 +37,17 @@ def create_resource(resource):
     Resources.append()
 
 
+class DebugResource(CacheCompaitableResource):
+
+    route = '/test/debug/'
+
+    def on_delete(self, req, resp):
+        client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
+        client.flushall()
+        client.flushdb()
+        resp.status = '204 No Content'
+
+
 class TestResource(CacheCompaitableResource):
 
     route = '/test/{test_id}/'
@@ -62,7 +76,7 @@ class TestResource(CacheCompaitableResource):
             raise HTTPNotFound()
 
 
-class TestUniqueResource(CacheCompaitableResource):
+class TestUniqueResource(TestResource):
 
     route = '/test/unique/{test_id}/'
     unique_cache = True
@@ -80,7 +94,6 @@ class TestCollectionResource(CacheCompaitableResource):
     def on_post(self, req, resp):
         payload = json.loads(req.stream.read())
         create_resource(payload)
-
 
 
 TestResource.binded_resoures = [TestCollectionResource]
