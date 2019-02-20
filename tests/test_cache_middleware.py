@@ -5,7 +5,7 @@ from tests.falcon.app import api
 from tests.falcon.resource import MAX_SLEEP_TIME
 
 
-class HrefMap:
+class HrefMap(object):
     TEST = '/test/{test_id}/'
     TEST_UNIQUE = '/test/unique/{test_id}/'
     COLLECTION = '/test/'
