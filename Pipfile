@@ -8,6 +8,7 @@ falcon = "*"
 gunicorn = "*"
 pytest = "*"
 pylint = "*"
+pytest-cov = "*"
 
 [packages]
 redis = "*"
