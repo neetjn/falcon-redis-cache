@@ -40,9 +40,9 @@ class RedisCacheMiddleware(object):
         if req_succeeded and hasattr(resource, 'use_cache') and resource.use_cache:
             cache = cache_key(req, resource)
             if req.method == HttpMethods.GET:
-                self.client.set(cache, resp.body)
                 if not resp.body:
                     resp.body = resp.context.get('cached')
+                self.client.set(cache, resp.body)
             else:
                 self.client.delete(cache)
                 params = req.context.get('params')
@@ -52,7 +52,7 @@ class RedisCacheMiddleware(object):
                     # assumes that binded resources ay have routes with similar params
                     route = Template(tmpl).safe_substitute(**params)
                     # remove last character, uri has final slash stripped
-                    uri = f'{req.scheme}://{req.netloc}{route}'
+                    uri = '{}://{}{}'.format(req.scheme, req.netloc, route)
                     # delete binded cached resources
                     _cache = cache_key(req, resc, uri)
                     self.client.delete(_cache)

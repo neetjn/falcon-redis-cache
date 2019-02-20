@@ -1,19 +1,21 @@
 dist: trusty
 language: python
+services:
+  - redis
 python:
-  - '2.7'
   - '3.6'
 before_install:
   - pip install codecov
+  - pip install pipenv
 install:
   - pipenv install --dev
 script:
   - pipenv run pytest --cov=falcon_redis_cache tests
   - if [ "$TRAVIS_BRANCH" == "master" ]; then codecov; fi
-# deploy:
-#   provider: pypi
-#   user: neetjn
-#   password:
-#     secure: cr84admn/isBO/I6e/kHI2jpKpO/SX4UT59uyt2LyBL76fWI78T+x6CN7lsmz5mXWuYckv59H5lGxh3TW4s0fFPFuawjymFodLo5lEeqzDqvifv0AL86TM0+a627Z9ac4wbP0mBBQP95WlLkjxR93H6obom0+mfpMHsVrCa+E1egzPPcFT7JfVZeOe/jF5Q7ZbTbqTPk4y1xUOV6wXG7d5gObjk27dpRQK2b+hs6FNkx6vk2XFygwk/i52WOFg8oO0DAVeyw7yO6lS3noao69q4yYDRVZG3Iy9gyT+l359LzFlHzkdluC0D0jo+lHHh4AZV4Il74D2N06lEnroKm+20oO1hZkDOlrpxYQFDXTu2nrx/Knfpl/qTUkQpG0IrvKA9QtyAm2V3H885oOj5XMt1b8Jlpf1Vlu3L3Q8O6SK4fY4SJIidj994pc+uX3CO0rTtFl3bFZ6omjgw68WSaPQfPs7j3Tw7phG6hQ+u7XnJFk4/GzFLkQwzdJydzHf51pctUEklWOmVfI8eOimLwEwKPAycZQRj9uP2QfX9YVK1Mr+wQEe0hywt8JZfhZwJiBd+/YIhhJfUprrfi4vb9z7kX0Ksh8W/gb+eyE8G/Fp5FpRN7OFbBLCs+RC3oeTscWvSGJM9I/ZbWuVRkpeWaJTRsAN5zyS8MOwiF1GRUHC0=
-#   on:
-#     branch: master
+deploy:
+  provider: pypi
+  user: neetjn
+  password:
+    secure: cr84admn/isBO/I6e/kHI2jpKpO/SX4UT59uyt2LyBL76fWI78T+x6CN7lsmz5mXWuYckv59H5lGxh3TW4s0fFPFuawjymFodLo5lEeqzDqvifv0AL86TM0+a627Z9ac4wbP0mBBQP95WlLkjxR93H6obom0+mfpMHsVrCa+E1egzPPcFT7JfVZeOe/jF5Q7ZbTbqTPk4y1xUOV6wXG7d5gObjk27dpRQK2b+hs6FNkx6vk2XFygwk/i52WOFg8oO0DAVeyw7yO6lS3noao69q4yYDRVZG3Iy9gyT+l359LzFlHzkdluC0D0jo+lHHh4AZV4Il74D2N06lEnroKm+20oO1hZkDOlrpxYQFDXTu2nrx/Knfpl/qTUkQpG0IrvKA9QtyAm2V3H885oOj5XMt1b8Jlpf1Vlu3L3Q8O6SK4fY4SJIidj994pc+uX3CO0rTtFl3bFZ6omjgw68WSaPQfPs7j3Tw7phG6hQ+u7XnJFk4/GzFLkQwzdJydzHf51pctUEklWOmVfI8eOimLwEwKPAycZQRj9uP2QfX9YVK1Mr+wQEe0hywt8JZfhZwJiBd+/YIhhJfUprrfi4vb9z7kX0Ksh8W/gb+eyE8G/Fp5FpRN7OFbBLCs+RC3oeTscWvSGJM9I/ZbWuVRkpeWaJTRsAN5zyS8MOwiF1GRUHC0=
+  on:
+    branch: master
