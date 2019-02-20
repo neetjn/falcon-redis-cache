@@ -40,9 +40,9 @@ class RedisCacheMiddleware(object):
         if req_succeeded and hasattr(resource, 'use_cache') and resource.use_cache:
             cache = cache_key(req, resource)
             if req.method == HttpMethods.GET:
-                self.client.set(cache, resp.body)
                 if not resp.body:
                     resp.body = resp.context.get('cached')
+                self.client.set(cache, resp.body)
             else:
                 self.client.delete(cache)
                 params = req.context.get('params')

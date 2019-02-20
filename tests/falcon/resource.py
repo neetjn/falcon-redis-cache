@@ -2,6 +2,7 @@ import json
 import redis
 import time
 import os
+import falcon
 from falcon.errors import HTTPBadRequest, HTTPNotFound
 from falcon_redis_cache.hooks import CacheProvider
 from falcon_redis_cache.resource import CacheCompaitableResource
@@ -9,7 +10,7 @@ from falcon_redis_cache.resource import CacheCompaitableResource
 from tests.falcon.constants import REDIS_HOST, REDIS_PORT
 
 
-MAX_SLEEP_TIME = int(os.environ.setdefault('MAX_SLEEP_TIME', '3'))
+MAX_SLEEP_TIME = int(os.environ.setdefault('MAX_SLEEP_TIME', '5'))
 Resources = [{'_id': str(n), 'name': '{}-budget'.format(n)} for n in range(5)]
 
 
@@ -42,16 +43,17 @@ class DebugResource(CacheCompaitableResource):
     route = '/test/debug/'
 
     def on_delete(self, req, resp):
+        resp.status = falcon.HTTP_204
         client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
         client.flushall()
         client.flushdb()
-        resp.status = '204 No Content'
 
 
 class TestResource(CacheCompaitableResource):
 
     route = '/test/{test_id}/'
 
+    @CacheProvider.from_cache
     def on_get(self, req, resp, test_id):
         time.sleep(MAX_SLEEP_TIME)
         try:
@@ -61,6 +63,7 @@ class TestResource(CacheCompaitableResource):
         resp.body = json.dumps(resource)
 
     def on_put(self, req, resp, test_id):
+        resp.status = falcon.HTTP_204
         payload = json.loads(req.stream.read())
         if '_id' not in payload or not isinstance(payload.get('_id'), str):
             raise HTTPBadRequest()
@@ -70,6 +73,7 @@ class TestResource(CacheCompaitableResource):
             raise HTTPNotFound()
 
     def on_delete(self, req, resp, test_id):
+        resp.status = falcon.HTTP_204
         try:
             delete_resource(test_id)
         except StopIteration:
@@ -87,11 +91,13 @@ class TestCollectionResource(CacheCompaitableResource):
     route = '/test/'
     cache_with_query = True
 
+    @CacheProvider.from_cache
     def on_get(self, req, resp):
         time.sleep(MAX_SLEEP_TIME)
         resp.body = json.dumps(Resources)
 
     def on_post(self, req, resp):
+        resp.status = falcon.HTTP_201
         payload = json.loads(req.stream.read())
         create_resource(payload)
 
