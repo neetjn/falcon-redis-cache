@@ -1,6 +1,8 @@
 # falcon-redis-cache
 
 [![build](https://travis-ci.org/neetjn/falcon-redis-cache.svg?branch=master)](https://travis-ci.org/neetjn/falcon-redis-cache)
+[![codecov](https://codecov.io/gh/neetjn/falcon-redis-cache/branch/master/graph/badge.svg)](https://codecov.io/gh/neetjn/falcon-redis-cache)
+
 [![PyPI version](https://badge.fury.io/py/falcon-redis-cache.svg)](https://badge.fury.io/py/falcon-redis-cache)
 
 Redis cache middleware for falcon resources. Pulled from py-blog project @ https://github.com/neetjn/py-blog
