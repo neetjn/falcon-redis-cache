@@ -1,9 +1,6 @@
 # falcon-redis-cache
 
 [![build](https://travis-ci.org/neetjn/falcon-redis-cache.svg?branch=master)](https://travis-ci.org/neetjn/falcon-redis-cache)
-[![Code Health](https://landscape.io/github/neetjn/falcon-redis-cache/master/landscape.svg?style=flat)](https://landscape.io/github/neetjn/falcon-redis-cache/master)
-[![codecov](https://codecov.io/gh/neetjn/falcon-redis-cache/branch/master/graph/badge.svg)](https://codecov.io/gh/neetjn/falcon-redis-cache)
-
 [![PyPI version](https://badge.fury.io/py/falcon-redis-cache.svg)](https://badge.fury.io/py/falcon-redis-cache)
 
 Redis cache middleware for falcon resources. Pulled from py-blog project @ https://github.com/neetjn/py-blog
@@ -54,7 +51,9 @@ class MyResource(CacheCompaitableResource):
   # - tells middleware to process matching resources with unique query strings
   cache_with_query = False
   # list of resource definitions to clear cache from in the event of a change
-  binded_resoures = []
+  # for ex; if a post, put, or delete request is made on this resource...
+  # any binded resources will have their caches cleaned
+  binded_resources = []
 
   def on_get(self, req, res):
     ...
