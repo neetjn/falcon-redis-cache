@@ -51,6 +51,8 @@ class MyResource(CacheCompaitableResource):
   # - tells middleware to process matching resources with unique query strings
   cache_with_query = False
   # list of resource definitions to clear cache from in the event of a change
+  # for ex; if a post, put, or delete request is made on this resource...
+  # any binded resources will have their caches cleaned
   binded_resources = []
 
   def on_get(self, req, res):
