@@ -102,4 +102,4 @@ class TestCollectionResource(CacheCompaitableResource):
         create_resource(payload)
 
 
-TestResource.binded_resoures = [TestCollectionResource]
+TestResource.binded_resources = [TestCollectionResource]

@@ -46,7 +46,7 @@ class RedisCacheMiddleware(object):
             else:
                 self.client.delete(cache)
                 params = req.context.get('params')
-                for resc in resource.binded_resoures:
+                for resc in resource.binded_resources:
                     # interpolate for safe formatting
                     tmpl = resc.route.replace('{', '${')
                     # assumes that binded resources ay have routes with similar params
