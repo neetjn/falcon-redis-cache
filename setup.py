@@ -6,7 +6,7 @@ from setuptools import setup
 setup(
     name='falcon-redis-cache',
     description='Redis cache middleware for falcon resources.',
-    version='0.0.2',
+    version='0.0.3',
     url='https://neetjn.github.io/falcon-redis-cache/',
     author='John Nolette',
     author_email='john@neetgroup.net',
