@@ -18,6 +18,7 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
     install_requires=[
+        'inject',
         'redis'
     ],
     packages=['falcon_redis_cache']

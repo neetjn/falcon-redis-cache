@@ -78,6 +78,26 @@ class ItemResource(CacheCompaitableResource):
     ...
 ```
 
+For clearing resource cache where bindings are not possible or inherantly difficult, refer to the utility method `clear_resource_cache`:
+
+```python
+import inject
+import redis
+
+from falcon_redis_cache.utils import clear_resource_cache
+
+
+class ItemCommentResource(CacheCompaitableResource):
+
+  route '/item/{item_id}/comment'
+
+  def on_post(self, req, resp, item_id):
+    # method makes use of python-inject for redis DI
+    clear_resource_cache(ItemResource, req, item_id=item_id)
+
+inject.configure(lambda binder: binder.bind(redis.Redis, ...)))
+```
+
 ## Contributors
 
 * **John Nolette** (john@neetgroup.net)
