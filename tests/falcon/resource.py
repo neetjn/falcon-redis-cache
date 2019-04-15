@@ -1,11 +1,13 @@
+import falcon
+import inject
 import json
+import os
 import redis
 import time
-import os
-import falcon
 from falcon.errors import HTTPBadRequest, HTTPNotFound
 from falcon_redis_cache.hooks import CacheProvider
 from falcon_redis_cache.resource import CacheCompaitableResource
+from falcon_redis_cache.utils import clear_resource_cache
 
 from tests.falcon.constants import REDIS_HOST, REDIS_PORT
 
@@ -80,6 +82,14 @@ class TestResource(CacheCompaitableResource):
             raise HTTPNotFound()
 
 
+class TestBindedResource(CacheCompaitableResource):
+
+    route = '/test/binded/{test_id}/action'
+
+    def on_post(self, req, resp, test_id):
+        clear_resource_cache(TestResource, req)
+
+
 class TestUniqueResource(TestResource):
 
     route = '/test/unique/{test_id}/'
@@ -103,3 +113,5 @@ class TestCollectionResource(CacheCompaitableResource):
 
 
 TestResource.binded_resources = [TestCollectionResource]
+# configure injector to use redis client
+inject.configure(lambda binder: binder.bind(redis.Redis, redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)))

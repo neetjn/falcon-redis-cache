@@ -20,7 +20,7 @@ class RedisCacheMiddleware(object):
 
     def process_resource(self, req, resp, resource, params):
         """Provide redis cache with every request."""
-        if hasattr(resource, 'use_cache') and resource.use_cache:
+        if isinstance(resource, CacheCompaitableResource) and resource.use_cache:
             req.context.setdefault('params', params)
             resp.context.setdefault('cached', self.client.get(cache_key(req, resource)))
 
