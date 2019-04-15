@@ -47,5 +47,5 @@ class RedisCacheMiddleware(object):
                     self.client.delete(_cache)
                     if resc.cache_with_query:
                         # for resources using query strings
-                        for key in self.client.scan_iter(_cache):
+                        for key in self.client.scan_iter('{}*'.format(_cache[:-1])):
                             self.client.delete(key)

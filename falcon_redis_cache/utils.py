@@ -27,5 +27,5 @@ def clear_resource_cache(resource, req, redis_client=None, **params):
         redis_client.delete(_cache)
         if resource.cache_with_query:
             # for resources using query strings
-            for key in redis_client.scan_iter(_cache):
-                self.client.delete(key)
+            for key in redis_client.scan_iter('{}*'.format(_cache[:-1])):
+                redis_client.delete(key)

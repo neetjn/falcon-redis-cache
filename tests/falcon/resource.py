@@ -87,7 +87,7 @@ class TestBindedResource(CacheCompaitableResource):
     route = '/test/binded/{test_id}/action'
 
     def on_post(self, req, resp, test_id):
-        clear_resource_cache(TestResource, req)
+        clear_resource_cache(TestResource, req, test_id=test_id)
 
 
 class TestUniqueResource(TestResource):
