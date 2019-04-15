@@ -1,6 +1,7 @@
 import redis
-from logging import warning
 from string import Template
+from .resource import CacheCompaitableResource
+from .utils import cache_key
 
 
 class HttpMethods(object):
@@ -10,18 +11,6 @@ class HttpMethods(object):
     POST = 'POST'
     DELETE = 'DELETE'
     PATCH = 'PATCH'
-
-
-def cache_key(req, resource, uri=None):
-    """Provides unique redis cache key."""
-    uri = uri or req.uri
-    if uri.endswith('/'):
-        uri = uri[:-1]
-    if resource.unique_cache:
-        if req.auth:
-            return '{}+{}'.format(uri, req.auth)
-        warning(req, 'Could not construct unique key for uri "{}"'.format(uri))
-    return uri
 
 
 class RedisCacheMiddleware(object):
@@ -37,7 +26,7 @@ class RedisCacheMiddleware(object):
 
     def process_response(self, req, resp, resource, req_succeeded):
         """Sets or deletes cache for provided resources."""
-        if req_succeeded and hasattr(resource, 'use_cache') and resource.use_cache:
+        if req_succeeded and isinstance(resource, CacheCompaitableResource) and resource.use_cache:
             cache = cache_key(req, resource)
             if req.method == HttpMethods.GET:
                 if not resp.body:
