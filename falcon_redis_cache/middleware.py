@@ -1,6 +1,7 @@
 import redis
-from logging import warning
 from string import Template
+from .resource import CacheCompaitableResource
+from .utils import cache_key
 
 
 class HttpMethods(object):
@@ -12,18 +13,6 @@ class HttpMethods(object):
     PATCH = 'PATCH'
 
 
-def cache_key(req, resource, uri=None):
-    """Provides unique redis cache key."""
-    uri = uri or req.uri
-    if uri.endswith('/'):
-        uri = uri[:-1]
-    if resource.unique_cache:
-        if req.auth:
-            return '{}+{}'.format(uri, req.auth)
-        warning(req, 'Could not construct unique key for uri "{}"'.format(uri))
-    return uri
-
-
 class RedisCacheMiddleware(object):
 
     def __init__(self, redis_host, redis_port, redis_db=0):
@@ -31,13 +20,13 @@ class RedisCacheMiddleware(object):
 
     def process_resource(self, req, resp, resource, params):
         """Provide redis cache with every request."""
-        if hasattr(resource, 'use_cache') and resource.use_cache:
+        if isinstance(resource, CacheCompaitableResource) and resource.use_cache:
             req.context.setdefault('params', params)
             resp.context.setdefault('cached', self.client.get(cache_key(req, resource)))
 
     def process_response(self, req, resp, resource, req_succeeded):
         """Sets or deletes cache for provided resources."""
-        if req_succeeded and hasattr(resource, 'use_cache') and resource.use_cache:
+        if req_succeeded and isinstance(resource, CacheCompaitableResource) and resource.use_cache:
             cache = cache_key(req, resource)
             if req.method == HttpMethods.GET:
                 if not resp.body:
@@ -58,5 +47,5 @@ class RedisCacheMiddleware(object):
                     self.client.delete(_cache)
                     if resc.cache_with_query:
                         # for resources using query strings
-                        for key in self.client.scan_iter(_cache):
+                        for key in self.client.scan_iter('{}*'.format(_cache[:-1])):
                             self.client.delete(key)
